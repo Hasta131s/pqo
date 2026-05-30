@@ -1,0 +1,6 @@
+{
+  "name": "KayrSpam",
+  "description": "KayrSpam otomatik mesaj yazma, spam ve hızlı mesaj gönderme aracı.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

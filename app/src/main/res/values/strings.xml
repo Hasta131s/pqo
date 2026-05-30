@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">KayrSpam</string>
+    <string name="accessibility_service_description">KayrSpam otomatik mesaj yazma ve spam gönderme aracı. Açık olduğunda, ayarladığınız mesajları otomatik odaklanan metin kutularına tek tuşla yazıp göndermenizi sağlar.</string>
+</resources>
