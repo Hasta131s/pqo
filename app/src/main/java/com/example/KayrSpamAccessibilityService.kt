@@ -64,6 +64,134 @@ object KayrSpamState {
     var isAltCase by mutableStateOf(false)
     var isAutoSend by mutableStateOf(true)
     var isSpamming by mutableStateOf(false)
+    var selectedLang by mutableStateOf("TR")
+
+    private val translations = mapOf(
+        "TR" to mapOf(
+            "system_integration" to "SİSTEM ENTEGRASYONU",
+            "accessibility_service" to "Erişilebilirlik Servisi",
+            "service_active" to "Aktif ve Bağlı",
+            "service_inactive" to "Servis kapalı (Aktifleştirin)",
+            "overlay_permission" to "Ekran Üstü Çizim İzni",
+            "overlay_active" to "İzin Verildi",
+            "overlay_inactive" to "Tetikleyici balon için gerekir",
+            "keyboard_select" to "Varsayılan Klavye Seçimi",
+            "keyboard_select_sub" to "Klavyeleri Değiştir veya Yönet",
+            "configure_btn" to "YAPILANDIR",
+            "unsupported_ime" to "Klavye seçim menüsü açılamadı.",
+            "spam_configuration" to "SPAM YAPILANDIRMASI",
+            "payload_message_label" to "Varsayılan Spam Metni",
+            "writing_delay" to "Yazma Gecikmesi (Interval)",
+            "vol_hint" to "Cihazın SES+ (VOL+) tuşunu herhangi bir uygulamanın içindeyken spam tetikleyicisi olarak kullanabilirsiniz.",
+            "sandbox_title" to "KAYRSPAM TEST SAHASI",
+            "no_spam_yet" to "Henüz test spami tetiklenmedi.",
+            "sandbox_instruction" to "Alttaki test alanını odakladıktan sonra yeşil/mor balon 'BAŞLAT' tuşuyla spam akışını test edin.",
+            "sandbox_field_placeholder" to "Spamleri yakalamak için buraya dokunun...",
+            "help_guide" to "KAYRSPAM KILAVUZU (YARDIM & REHBER)",
+            "help_step_1" to "1. 'Erişilebilirlik Servisi' kısmına dokunarak KayrSpam servisini aktifleştirin.",
+            "help_step_2" to "2. 'Üstte Çizim İzni' kaydırıcısını açın. Ekranda 'K' logosu belirecektir.",
+            "help_step_3" to "3. Klavye butonuna dokunarak dilediğiniz girişi/klavyeyi hızlıca seçin veya değiştirin.",
+            "help_step_4" to "4. Hedef sohbet alanına odaklanıp 'K' balonundan başlatabilir, ya da SES+ tuşunu tetikleyici yapabilirsiniz.",
+            "language_selection" to "DİL SEÇİMİ / LANGUAGE SELECTION",
+            "controller_title" to "KayrSpam Kontrolü",
+            "spam_text_label" to "Spam Edilecek Yazı",
+            "typing_speed" to "Yazma Hızı",
+            "shift_effect" to "Shift Etkisi",
+            "shift_sub" to "AŞIRI/normal",
+            "auto_send" to "Otomatik Gönder",
+            "auto_send_sub" to "Otomatik Tıklar",
+            "keyboard_focus" to "Klavyeyi Odakla",
+            "keyboard_focused" to "[Klavye Odaklandı]",
+            "start_spamming" to "SPAMMING BAŞLAT",
+            "stop_spamming" to "SPAMMING DURDUR",
+            "panel_controls" to "Kontroller",
+            "help_tab" to "Yardım & Kılavuz"
+        ),
+        "EN" to mapOf(
+            "system_integration" to "SYSTEM INTEGRATION",
+            "accessibility_service" to "Accessibility Service",
+            "service_active" to "Active and Connected",
+            "service_inactive" to "Service disabled (Tap to Enable)",
+            "overlay_permission" to "Overlay Drawing Permission",
+            "overlay_active" to "Permission Granted",
+            "overlay_inactive" to "Required for trigger bubble",
+            "keyboard_select" to "Default Keyboard Selection",
+            "keyboard_select_sub" to "Switch or Manage Input Methods",
+            "configure_btn" to "CONFIGURE",
+            "unsupported_ime" to "Keyboard picker could not be opened.",
+            "spam_configuration" to "SPAM CONFIGURATION",
+            "payload_message_label" to "Default Spam Text (Payload Message)",
+            "writing_delay" to "Writing Delay (Interval)",
+            "vol_hint" to "You can use your device's VOL+ key inside any application to toggle spamming.",
+            "sandbox_title" to "KAYRSPAM TEST FIELD (SANDBOX)",
+            "no_spam_yet" to "No test spam triggered yet.",
+            "sandbox_instruction" to "Focus the test area below and use the purple 'K' float button to inspect output.",
+            "sandbox_field_placeholder" to "Tap here to capture local spams...",
+            "help_guide" to "KAYRSPAM USER GUIDE",
+            "help_step_1" to "1. Turn on the 'Accessibility Service' under downloaded apps.",
+            "help_step_2" to "2. Allow 'Overlay Drawing Permission' to show 'K' key controller.",
+            "help_step_3" to "3. Tap the Keyboard button to switch/manage device input methods easily.",
+            "help_step_4" to "4. Focus any message field and tap float button 'START' or press VOL+ physical key.",
+            "language_selection" to "LANGUAGE SELECTION",
+            "controller_title" to "KayrSpam Controller",
+            "spam_text_label" to "Spam Message Payload",
+            "typing_speed" to "Typing speed",
+            "shift_effect" to "Shift Mode",
+            "shift_sub" to "UPPER/lower case",
+            "auto_send" to "Auto Send",
+            "auto_send_sub" to "Auto click send key",
+            "keyboard_focus" to "Focus Keyboard",
+            "keyboard_focused" to "[Keyboard Focused]",
+            "start_spamming" to "START SPAMMING",
+            "stop_spamming" to "STOP SPAMMING",
+            "panel_controls" to "Panel Controls",
+            "help_tab" to "Help & Guide"
+        ),
+        "DE" to mapOf(
+            "system_integration" to "SYSTEMINTEGRATION",
+            "accessibility_service" to "Barrierefreiheitsdienst",
+            "service_active" to "Aktiviert und Verbunden",
+            "service_inactive" to "Dienst deaktiviert (Aktivieren)",
+            "overlay_permission" to "Berechtigung über anderen Apps",
+            "overlay_active" to "Erlaubnis erteilt",
+            "overlay_inactive" to "Erforderlich für schwebenden button",
+            "keyboard_select" to "Standard-Tastaturauswahl",
+            "keyboard_select_sub" to "Eingabemethoden wechseln/verwalten",
+            "configure_btn" to "WAEHLEN",
+            "unsupported_ime" to "Tastaturauswahl konnte nicht geöffnet werden.",
+            "spam_configuration" to "SPAM-KONFIGURATION",
+            "payload_message_label" to "Standard-Spam-Text (Nachricht)",
+            "writing_delay" to "Schreibverzögerung (Intervall)",
+            "vol_hint" to "Sie können die LAUTSTÄRKE+ Taste in jeder App verwenden, um das Spammen umzuschalten.",
+            "sandbox_title" to "KAYRSPAM TESTBEREICH (SANDBOX)",
+            "no_spam_yet" to "Noch kein Test-Spam ausgelöst.",
+            "sandbox_instruction" to "Fokussieren Sie das Testeingabefeld und testen sie den Spam-Ablauf über den 'K'-Button.",
+            "sandbox_field_placeholder" to "Hier tippen, um Spams abzufangen...",
+            "help_guide" to "KAYRSPAM HILFE & ANLEITUNG",
+            "help_step_1" to "1. Aktivieren Sie den 'Barrierefreiheitsdienst' in Ihrem Android System.",
+            "help_step_2" to "2. Erteilen Sie die Overlay-Berechtigung, um den 'K'-Button anzuzeigen.",
+            "help_step_3" to "3. Tippen Sie auf Tastatur wechseln, um Ihre Eingabemethode ganz einfach auszuwählen.",
+            "help_step_4" to "4. Fokusieren Sie den Chat und drücken Sie 'START' am Button oder die LAUTSTÄRKE+ Taste.",
+            "language_selection" to "SPRACHAUSWAHL",
+            "controller_title" to "KayrSpam-Steuerung",
+            "spam_text_label" to "Spam-Nachrichtentext",
+            "typing_speed" to "Schreibgeschwindigkeit",
+            "shift_effect" to "Shift-Effekt",
+            "shift_sub" to "GROß/klein fall",
+            "auto_send" to "Auto-Senden",
+            "auto_send_sub" to "Drückt automatisch Senden",
+            "keyboard_focus" to "Tastatur fokussieren",
+            "keyboard_focused" to "[Tastatur fokussiert]",
+            "start_spamming" to "SPAM STARTEN",
+            "stop_spamming" to "SPAM STOPPEN",
+            "panel_controls" to "Bedienfeld",
+            "help_tab" to "Hilfe & Anleitung"
+        )
+    )
+
+    fun getString(key: String): String {
+        return translations[selectedLang]?.get(key) ?: translations["TR"]?.get(key) ?: key
+    }
 }
 
 class KayrSpamAccessibilityService : AccessibilityService() {
@@ -552,7 +680,7 @@ fun KayrSpamOverlayPanel(
                             )
                     )
                     Text(
-                        text = "KayrSpam Controller",
+                        text = KayrSpamState.getString("controller_title"),
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
                         fontSize = 15.sp
@@ -577,7 +705,7 @@ fun KayrSpamOverlayPanel(
             OutlinedTextField(
                 value = KayrSpamState.spamText,
                 onValueChange = { KayrSpamState.spamText = it },
-                label = { Text("Spam Edilecek Yazı", color = Color.Gray) },
+                label = { Text(KayrSpamState.getString("spam_text_label"), color = Color.Gray) },
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedTextColor = Color.White,
                     unfocusedTextColor = Color.White.copy(alpha = 0.9f),
@@ -621,7 +749,7 @@ fun KayrSpamOverlayPanel(
                 horizontalArrangement = Arrangement.End
             ) {
                 Text(
-                    text = if (isInputFocused) "[Klavye Odaklandı]" else "Klavyeyi Odakla",
+                    text = if (isInputFocused) KayrSpamState.getString("keyboard_focused") else KayrSpamState.getString("keyboard_focus"),
                     color = if (isInputFocused) Color(0xFFD0BCFF) else Color.Gray,
                     fontSize = 11.sp,
                     fontWeight = FontWeight.SemiBold,
@@ -641,7 +769,7 @@ fun KayrSpamOverlayPanel(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Yazma Hızı: ${KayrSpamState.intervalMs}ms",
+                    text = "${KayrSpamState.getString("typing_speed")}: ${KayrSpamState.intervalMs}ms",
                     color = Color.White.copy(alpha = 0.9f),
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Medium
@@ -702,8 +830,8 @@ fun KayrSpamOverlayPanel(
                         )
                     )
                     Column {
-                        Text("Shift Etkisi", color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Bold)
-                        Text("AŞIRI/normal", color = Color.Gray, fontSize = 10.sp)
+                        Text(KayrSpamState.getString("shift_effect"), color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                        Text(KayrSpamState.getString("shift_sub"), color = Color.Gray, fontSize = 10.sp)
                     }
                 }
 
@@ -722,8 +850,8 @@ fun KayrSpamOverlayPanel(
                         )
                     )
                     Column {
-                        Text("Otomatik Gönder", color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Bold)
-                        Text("Otomatik Tıklar", color = Color.Gray, fontSize = 10.sp)
+                        Text(KayrSpamState.getString("auto_send"), color = Color.White, fontSize = 12.sp, fontWeight = FontWeight.Bold)
+                        Text(KayrSpamState.getString("auto_send_sub"), color = Color.Gray, fontSize = 10.sp)
                     }
                 }
             }
@@ -754,7 +882,7 @@ fun KayrSpamOverlayPanel(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    text = if (KayrSpamState.isSpamming) "SPAMMING DURDUR" else "SPAMMING BAŞLAT",
+                    text = if (KayrSpamState.isSpamming) KayrSpamState.getString("stop_spamming") else KayrSpamState.getString("start_spamming"),
                     color = if (KayrSpamState.isSpamming) Color.White else Color(0xFF381E72),
                     fontWeight = FontWeight.Bold,
                     fontSize = 14.sp
