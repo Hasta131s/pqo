@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.Gravity
+import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
@@ -38,6 +39,9 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.ComposeView
+import androidx.compose.ui.platform.ViewCompositionStrategy
+import androidx.compose.runtime.Recomposer
+import androidx.compose.ui.platform.AndroidUiDispatcher
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -76,7 +80,7 @@ object KayrSpamState {
             "overlay_active" to "İzin Verildi",
             "overlay_inactive" to "Tetikleyici balon için gerekir",
             "keyboard_select" to "Varsayılan Klavye Seçimi",
-            "keyboard_select_sub" to "Klavyeleri Değiştir veya Yönet",
+            "keyboard_select_sub" to "KayrSpam klavye değildir. Tüm klavyelerinizde balon olarak çalışır. Değiştirmek için dokunun.",
             "configure_btn" to "YAPILANDIR",
             "unsupported_ime" to "Klavye seçim menüsü açılamadı.",
             "spam_configuration" to "SPAM YAPILANDIRMASI",
@@ -116,7 +120,7 @@ object KayrSpamState {
             "overlay_active" to "Permission Granted",
             "overlay_inactive" to "Required for trigger bubble",
             "keyboard_select" to "Default Keyboard Selection",
-            "keyboard_select_sub" to "Switch or Manage Input Methods",
+            "keyboard_select_sub" to "KayrSpam is not a keyboard. Runs as float bubble over any keyboard. Tap to switch.",
             "configure_btn" to "CONFIGURE",
             "unsupported_ime" to "Keyboard picker could not be opened.",
             "spam_configuration" to "SPAM CONFIGURATION",
@@ -156,7 +160,7 @@ object KayrSpamState {
             "overlay_active" to "Erlaubnis erteilt",
             "overlay_inactive" to "Erforderlich für schwebenden button",
             "keyboard_select" to "Standard-Tastaturauswahl",
-            "keyboard_select_sub" to "Eingabemethoden wechseln/verwalten",
+            "keyboard_select_sub" to "KayrSpam ist keine Tastatur. Läuft als Symbol über jeder Tastatur. Tippen.",
             "configure_btn" to "WAEHLEN",
             "unsupported_ime" to "Tastaturauswahl konnte nicht geöffnet werden.",
             "spam_configuration" to "SPAM-KONFIGURATION",
@@ -235,6 +239,25 @@ class KayrSpamAccessibilityService : AccessibilityService() {
 
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         // Just keep the service alive and responsive to window changes
+    }
+
+    override fun onKeyEvent(event: KeyEvent?): Boolean {
+        if (event == null) return false
+        val keyCode = event.keyCode
+        val action = event.action
+
+        if (keyCode == KeyEvent.KEYCODE_VOLUME_UP) {
+            if (action == KeyEvent.ACTION_DOWN) {
+                // Toggle spamming when VOL+ is pressed inside any application
+                if (KayrSpamState.isSpamming) {
+                    stopSpamming()
+                } else {
+                    startSpamming()
+                }
+            }
+            return true // Consume key event to handle it internally
+        }
+        return super.onKeyEvent(event)
     }
 
     override fun onInterrupt() {
@@ -398,11 +421,23 @@ class KayrSpamAccessibilityService : AccessibilityService() {
             y = 400
         }
 
-        bubbleContainer = FrameLayout(this)
-        val composeView = ComposeView(this).apply {
+        bubbleContainer = FrameLayout(this).apply {
             setViewTreeLifecycleOwner(customLifecycleOwner)
             setViewTreeViewModelStoreOwner(customLifecycleOwner)
             setViewTreeSavedStateRegistryOwner(customLifecycleOwner)
+        }
+        val composeView = ComposeView(this).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnDetachedFromWindow)
+            setViewTreeLifecycleOwner(customLifecycleOwner)
+            setViewTreeViewModelStoreOwner(customLifecycleOwner)
+            setViewTreeSavedStateRegistryOwner(customLifecycleOwner)
+            
+            val recomposer = Recomposer(AndroidUiDispatcher.CurrentThread)
+            setParentCompositionContext(recomposer)
+            serviceScope.launch {
+                recomposer.runRecomposeAndApplyChanges()
+            }
+            
             setContent {
                 KayrFloatingBubble(
                     onExpandRequested = {
@@ -487,11 +522,23 @@ class KayrSpamAccessibilityService : AccessibilityService() {
             y = 120 // Positioned elegant, floating just above standard soft keyboard boundary
         }
 
-        overlayContainer = FrameLayout(this)
-        val composeView = ComposeView(this).apply {
+        overlayContainer = FrameLayout(this).apply {
             setViewTreeLifecycleOwner(customLifecycleOwner)
             setViewTreeViewModelStoreOwner(customLifecycleOwner)
             setViewTreeSavedStateRegistryOwner(customLifecycleOwner)
+        }
+        val composeView = ComposeView(this).apply {
+            setViewCompositionStrategy(ViewCompositionStrategy.DisposeOnDetachedFromWindow)
+            setViewTreeLifecycleOwner(customLifecycleOwner)
+            setViewTreeViewModelStoreOwner(customLifecycleOwner)
+            setViewTreeSavedStateRegistryOwner(customLifecycleOwner)
+
+            val recomposer = Recomposer(AndroidUiDispatcher.CurrentThread)
+            setParentCompositionContext(recomposer)
+            serviceScope.launch {
+                recomposer.runRecomposeAndApplyChanges()
+            }
+            
             setContent {
                 KayrSpamOverlayPanel(
                     onMinimizeRequested = {
